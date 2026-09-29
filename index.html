@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DITLIS SYSTEM</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#020305;
+  color:#00ffcc;
+  font-family:monospace;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.box{
+  width:94%;
+  max-width:600px;
+  border:2px solid #00ffcc;
+  padding:22px;
+  box-shadow:0 0 25px #00ffcc;
+  background:#030608;
+}
+h1{
+  text-align:center;
+  color:#ff00ff;
+  text-shadow:0 0 15px #ff00ff;
+}
+#terminal{
+  min-height:250px;
+  line-height:1.7;
+}
+.progress{
+  height:20px;
+  border:1px solid #00ffcc;
+  margin:18px 0;
+}
+#bar{
+  height:100%;
+  width:0%;
+  background:#00ffcc;
+  box-shadow:0 0 15px #00ffcc;
+}
+button{
+  width:100%;
+  padding:15px;
+  background:#050505;
+  color:#00ffcc;
+  border:2px solid #00ffcc;
+  font:bold 16px monospace;
+}
+#shock{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#000;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  text-align:center;
+}
+#shock h2{
+  font-size:38px;
+  color:#ff0055;
+  text-shadow:0 0 25px red;
+}
+#shock p{color:white;font-size:20px}
+</style>
+</head>
+
+<body>
+
+<div class="box" id="main">
+  <h1>DITLIS CYBER SYSTEM</h1>
+
+  <div id="terminal">
+    SYSTEM READY...<br>
+    Press START to continue.
+  </div>
+
+  <div class="progress">
+    <div id="bar"></div>
+  </div>
+
+  <button onclick="startPrank()">▶ START SYSTEM</button>
+</div>
+
+<div id="shock">
+  <h2>⚠ SYSTEM ALERT ⚠</h2>
+  <p>...</p>
+  <h2>KENA PRANK 😂</h2>
+  <button onclick="location.reload()">↻ ULANGI</button>
+</div>
+
+<script>
+let audioCtx;
+
+function beep(freq,duration){
+  if(!audioCtx)return;
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+
+  osc.frequency.value=freq;
+  osc.type="square";
+  gain.gain.value=0.08;
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.start();
+  osc.stop(audioCtx.currentTime+duration);
+}
+
+function startPrank(){
+  audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+
+  const terminal=document.getElementById("terminal");
+  const bar=document.getElementById("bar");
+
+  terminal.innerHTML="Initializing system...<br>";
+  beep(300,.15);
+
+  let progress=0;
+
+  const messages=[
+    "Connecting to DITLIS CORE...",
+    "Checking system...",
+    "Scanning network...",
+    "Analyzing connection...",
+    "Running security protocol...",
+    "Almost complete..."
+  ];
+
+  let msg=0;
+
+  const timer=setInterval(()=>{
+    progress+=Math.floor(Math.random()*8)+3;
+    if(progress>100)progress=100;
+
+    bar.style.width=progress+"%";
+
+    if(msg<messages.length){
+      terminal.innerHTML+=messages[msg]+"<br>";
+      beep(250+msg*100,.08);
+      msg++;
+    }
+
+    if(progress>=100){
+      clearInterval(timer);
+
+      setTimeout(()=>{
+        terminal.innerHTML=
+          "<span style='color:#ff0033'>⚠ WARNING ⚠</span><br>"+
+          "SYSTEM CHECK COMPLETE...<br>"+
+          "Preparing final message...";
+
+        beep(80,.5);
+
+        setTimeout(()=>{
+          document.getElementById("main").style.display="none";
+          document.getElementById("shock").style.display="flex";
+
+          if(navigator.vibrate){
+            navigator.vibrate([150,80,150,80,300]);
+          }
+
+          beep(1000,.15);
+        },2500);
+
+      },700);
+    }
+  },700);
+}
+</script>
+
+</body>
+</html>
